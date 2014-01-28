@@ -1,5 +1,10 @@
 /*jshint eqnull:true, expr:true*/
 
+// Testing tools 
+var veggies = ['kale', 'chard', 88, 'brok']
+var positions = { qb: "Colin", rb: "Frank", wr: "Crabtree" }
+var addTwo = function(e){return e + 2}
+
 var _ = { };
 
 (function() {
@@ -91,6 +96,15 @@ var _ = { };
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
+    var rejected = [];
+
+    _.each(collection, function(item){
+      if (!test(item)){
+        rejected.push(item)
+      }
+    });
+
+    return rejected; // REFACTOR LATER!!!
   };
 
   // Produce a duplicate-free version of the array.
