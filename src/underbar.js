@@ -189,8 +189,8 @@ var _ = { };
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
 
-    var initialValue = accumulator ? accumulator : collection.shift()
-    
+    var initialValue = accumulator === undefined ? collection.shift() : accumulator
+
     _.each(collection, function(item, key, list){
     
       initialValue = iterator(initialValue, item)
@@ -198,16 +198,6 @@ var _ = { };
     })
 
     return initialValue
-    /*
-      if accumulator is passed set this as initial value
-      else set inital value as collection[0]
-
-      iterate over the remaining portion of the collection
-        use the iterator function...
-          iterator(previousValue, item)
-
-    */
-
 
     /*
 
@@ -236,6 +226,21 @@ var _ = { };
     }, false);
   };
 
+/*_.contains([4,5,6], 2)
+
+  return 
+
+    _.reduce([4,5,6], iterator, false)
+      var initialVale = false;
+      
+      iteration 1: initialValue =
+        if(false) return true // false
+        return 4 === 2 // false
+      iteration 2: initialValue = 
+        if(false) return true // false
+        return 5 === 2 // false
+
+*/
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
