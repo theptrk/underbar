@@ -226,26 +226,32 @@ var _ = { };
     }, false);
   };
 
-/*_.contains([4,5,6], 2)
-
-  return 
-
-    _.reduce([4,5,6], iterator, false)
-      var initialVale = false;
-      
-      iteration 1: initialValue =
-        if(false) return true // false
-        return 4 === 2 // false
-      iteration 2: initialValue = 
-        if(false) return true // false
-        return 5 === 2 // false
-
-*/
-
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    if (iterator){
+      return _.reduce(collection, function(everyOne, item) {
+        if (!iterator(item)) {
+          return false;
+        }
+        return everyOne
+      }, true);
+    } else {
+      return _.reduce(collection, function(everyOne, item) {
+        if (!item) { return false }
+        return everyOne
+      }, true)
+    }
   };
+
+  /*_.every([true, false, 1], _.identity)
+
+  initialValue == true
+  of test(item) return false
+
+
+
+  */
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
