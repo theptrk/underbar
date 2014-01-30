@@ -189,29 +189,13 @@ var _ = { };
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
 
-    var initialValue = accumulator === undefined ? collection.shift() : accumulator
+    var initialValue = accumulator === undefined ? collection.shift() : accumulator;
 
     _.each(collection, function(item, key, list){
-    
       initialValue = iterator(initialValue, item)
-
     })
 
-    return initialValue
-
-    /*
-
-      function combine(array[0], iterator){
-        if(arguments.length === 0) {
-          return this
-        } else {
-          var nextItem = array.shift() 
-          return num * combine(arr)
-        }
-      }
-
-    */
-
+    return initialValue;
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -242,7 +226,23 @@ var _ = { };
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
-  };
+      /* if we use every, we need arguments collection and iterator 
+      the iterator is used to check the falsity of iterator(item)
+        if false, it returns false for reduce
+        else it returns the previousValue(starts with true)
+      
+      so what iterator sohuld we pass???
+
+
+      */
+      return _.reduce(collection, function(everyOne, item) {
+        var test = iterator ? (iterator(item)) : (item)
+        if (test) {
+          return true;
+        }
+        return everyOne
+      }, false);
+  }; 
 
 
   /**
