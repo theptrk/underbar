@@ -190,16 +190,23 @@ var _ = { };
   _.reduce = function(collection, iterator, accumulator) {
 
     var initialValue = accumulator ? accumulator : collection.shift()
-    var previousValue = initialValue;
-    console.log(previousValue)
     
     _.each(collection, function(item, key, list){
-      
-      iterator(previousValue, item)
-      var previousValue = collection.shift()
+    
+      initialValue = iterator(initialValue, item)
+
     })
 
-    console.log(previousValue)
+    return initialValue
+    /*
+      if accumulator is passed set this as initial value
+      else set inital value as collection[0]
+
+      iterate over the remaining portion of the collection
+        use the iterator function...
+          iterator(previousValue, item)
+
+    */
 
 
     /*
