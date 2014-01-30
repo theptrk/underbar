@@ -98,15 +98,29 @@ var _ = { };
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
+
+    var truths = _.filter(collection, test);
     var rejected = [];
-
+  
     _.each(collection, function(item){
-      if (!test(item)){
-        rejected.push(item)
+      if (truths.indexOf(item) === -1) {
+        rejected.push(item);
       }
-    });
+    })
 
-    return rejected; // *** REFACTOR LATER!!!
+    return rejected
+
+    // Old copy
+
+      /* var rejected = [];
+
+      _.each(collection, function(item){
+        if (!test(item)){
+          rejected.push(item)
+        }
+      });
+
+      return rejected; */
   };
 
   // Produce a duplicate-free version of the array.
@@ -163,7 +177,7 @@ var _ = { };
       return Object.prototype.toString.call(obj) == "[object Function]";
     }
 
-    var args = Array.prototype.slice.call(arguments, 2);
+    //var args = Array.prototype.slice.call(arguments, 2);
     var isFunc = isFunction(functionOrKey);
     
     return _.map(collection, function(value) {
@@ -186,12 +200,33 @@ var _ = { };
   //     return total + number;
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
+
+    var initialValue = accumulator ? accumulator : collection.shift()
+    var previousValue = initialValue;
+    console.log(previousValue)
     
-    _.each(collection, function(item){
-      accumulator = item + accumulator
+    _.each(collection, function(item, key, list){
+      
+      iterator(previousValue, item)
+      var previousValue = collection.shift()
     })
 
-    return accumulator
+    console.log(previousValue)
+
+
+    /*
+
+      function combine(array[0], iterator){
+        if(arguments.length === 0) {
+          return this
+        } else {
+          var nextItem = array.shift() 
+          return num * combine(arr)
+        }
+      }
+
+    */
+
   };
 
   // Determine if the array or object contains a given value (using `===`).
