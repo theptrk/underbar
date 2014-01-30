@@ -4,6 +4,8 @@
 var veggies = ['kale', 'chard', 88, 'brok']
 var positions = { qb: "Colin", rb: "Frank", wr: "Crabtree" }
 var addTwo = function(e){return e + 2}
+var myObj = {a:"123", b:"456", c: function(e){return e + 2}}
+// End testing tools 
 
 var _ = { };
 
@@ -156,6 +158,17 @@ var _ = { };
   // Calls the method named by methodName on each value in the list.
   // Note: you will nead to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+
+    function isFunction (obj) {
+      return Object.prototype.toString.call(obj) == "[object Function]";
+    }
+
+    //var args = Array.prototype.slice.call(arguments, 2);
+    var isFunc = isFunction(functionOrKey);
+    return _.map(collection, function(value) {
+      return (isFunc ? functionOrKey : value[functionOrKey]).apply(value, args);
+    });
+
   };
 
   // Reduces an array or object to a single value by repetitively calling
