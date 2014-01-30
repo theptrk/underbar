@@ -163,8 +163,9 @@ var _ = { };
       return Object.prototype.toString.call(obj) == "[object Function]";
     }
 
-    //var args = Array.prototype.slice.call(arguments, 2);
+    var args = Array.prototype.slice.call(arguments, 2);
     var isFunc = isFunction(functionOrKey);
+    
     return _.map(collection, function(value) {
       return (isFunc ? functionOrKey : value[functionOrKey]).apply(value, args);
     });
@@ -185,6 +186,12 @@ var _ = { };
   //     return total + number;
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
+    
+    _.each(collection, function(item){
+      accumulator = item + accumulator
+    })
+
+    return accumulator
   };
 
   // Determine if the array or object contains a given value (using `===`).
