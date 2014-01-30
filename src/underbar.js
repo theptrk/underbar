@@ -92,7 +92,7 @@ var _ = { };
     });
 
     return filtered;
-  };
+  };                    
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
@@ -109,18 +109,6 @@ var _ = { };
     })
 
     return rejected
-
-    // Old copy
-
-      /* var rejected = [];
-
-      _.each(collection, function(item){
-        if (!test(item)){
-          rejected.push(item)
-        }
-      });
-
-      return rejected; */
   };
 
   // Produce a duplicate-free version of the array.
