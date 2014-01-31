@@ -226,17 +226,9 @@ var _ = { };
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
-      /* if we use every, we need arguments collection and iterator 
-      the iterator is used to check the falsity of iterator(item)
-        if false, it returns false for reduce
-        else it returns the previousValue(starts with true)
-      
-      so what iterator sohuld we pass???
-
-
-      */
       return _.reduce(collection, function(everyOne, item) {
-        var test = iterator ? (iterator(item)) : (item)
+        var test = iterator ? (iterator(item)) : (item);
+
         if (test) {
           return true;
         }
@@ -264,6 +256,14 @@ var _ = { };
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    var args = Array.prototype.slice.call(arguments, 0);
+
+    return _.reduce(args, function(newObj, item){
+      for (var key in item) {
+        newObj[key] = item[key];
+      }
+      return newObj
+    })
   };
 
   // Like extend, but doesn't ever overwrite a key that already
