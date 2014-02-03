@@ -5,7 +5,14 @@ var veggies = ['kale', 'chard', 88, 'brok']
 var positions = { qb: "Colin", rb: "Frank", wr: "Crabtree" }
 var addTwo = function(e){return e + 2}
 var myObj = {a:"123", b:"456", c: function(e){return e + 2}}
+function isFunction (obj) {
+  return Object.prototype.toString.call(obj) == "[object Function]";
+}
 // End testing tools 
+
+// Shortcuts
+  var ArrP = Array.prototype;
+// End Shortcuts
 
 var _ = { };
 
@@ -161,10 +168,6 @@ var _ = { };
   // Note: you will nead to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
 
-    function isFunction (obj) {
-      return Object.prototype.toString.call(obj) == "[object Function]";
-    }
-
     //var args = Array.prototype.slice.call(arguments, 2);
     var isFunc = isFunction(functionOrKey);
     
@@ -277,7 +280,7 @@ var _ = { };
           newObj[key] = item[key];
         }
       }
-      return newObj
+      return newObj;
     })
   };
 
@@ -304,7 +307,7 @@ var _ = { };
     return function() {
       if (!alreadyCalled) {
         // TIP: .apply(this, arguments) is the standard way to pass on all of the
-        // infromation from one function call to another.
+        // information from one function call to another.
         result = func.apply(this, arguments);
         alreadyCalled = true;
       }
@@ -329,6 +332,12 @@ var _ = { };
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    var args = Array.prototype.slice.call(arguments,0);
+    args.shift(); args.shift();
+
+    setTimeout(function(){
+      func.apply(this, args)
+    }, wait)
   };
 
 
@@ -343,6 +352,15 @@ var _ = { };
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var args = Array.prototype.slice.call(array,0);
+    var shuffled = [];
+
+    for (var i = 0; i < array.length; i++) {
+      var take = Math.floor(Math.random() * (args.length) )
+      shuffled.push(args.splice(take,1).join())
+    };
+
+    return shuffled  
   };
 
 
@@ -357,6 +375,39 @@ var _ = { };
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+    // This is grossly unfinished 
+
+        /*if (isFunction(iterator)) {
+      var tempArr = _.map(collection, function (item) {
+        return [iterator(item), item];
+      });
+
+      tempArr.sort(function(a, b){
+        a = a[0];
+        b = b[0];
+        if (a == undefined){ return 1 }
+        return a < b ? -1: (a > b ? 1 : 0)
+      });
+
+      return _.map(tempArr, function (item){
+        return item[1];
+      })  
+    } else {}*/
+    if (Array.isArray(collection)){
+      var tempArr = _.invoke(collection, iterator);
+    };
+      /*
+        collection is an object with {key: value} pairs
+        iterator is now a string for the key that we want to compare
+      */
+
+      /*
+
+        _.sortBy(people, 'name')
+        people = {name: 'patrick', name: 'jon', name: 'raymond'}
+
+      */
+    
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -365,6 +416,17 @@ var _ = { };
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
+    /*
+      var args = arguments
+      var grabMax;
+        _.reduce(arguments, function(comparison, item){
+          if()
+        })amp
+      find max of both 
+      var zipped;
+      iterate til max
+        zipped.push([ argument])
+    */
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
@@ -372,16 +434,61 @@ var _ = { };
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+    var flatted = [];
+
+    var flattenAction = function(array){
+      if ( Array.isArray(array) ) {
+        console.log("Array Alert!!!")
+        _.each(array, function(item, key) {
+          if ( Array.isArray(item) ) {
+            flattenAction(item); // Recursion
+          }
+          else{
+            console.log("Pushing: " + array[key])
+            flatted.push(array[key])
+          }
+        })
+      };
+    }
+
+    flattenAction(nestedArray);
+    return flatted
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
-  _.intersection = function() {
+  _.intersection = function(arrays) {
+      var args = Array.prototype.slice.call(arguments,0);
+      var all = _.uniq(Array.prototype.concat.apply(
+        ArrP, ArrP.slice.call(arguments, 0)))
+      var intersection = _.uniq(Array.prototype.concat.apply(
+        ArrP, ArrP.slice.call(arguments, 0)))
+
+      _.each(all, function(item, key){
+        console.log("testing " + item +" & "+ key)
+        for (var i = 0; i < args.length; i++) {
+          //console.log(args[i])
+          if (!_.contains(args[i], item)) {
+            intersection.splice(intersection.indexOf(item),1)
+          };
+        };
+      })
+      
+      return intersection
+      //ArrP is defined on top
   };
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+    var restArray = ArrP.concat.apply(ArrP, ArrP.slice.call(arguments, 1));
+    var baseArray = arguments[0];
+
+    return _.filter(array, function(item) {
+      return !_.contains(restArray, item)
+      }); 
+
+    //ArrP is defined on top
   };
 
 
