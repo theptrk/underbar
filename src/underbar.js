@@ -416,17 +416,32 @@ var _ = { };
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
-    /*
-      var args = arguments
-      var grabMax;
-        _.reduce(arguments, function(comparison, item){
-          if()
-        })amp
-      find max of both 
-      var zipped;
-      iterate til max
-        zipped.push([ argument])
-    */
+
+    var args  = Array.prototype.slice.call(arguments,0);
+    var max = 0;
+    var zipped = [];
+
+    // Find max of all arrays 
+    _.each(args, function(item, key){
+      max = item.length > max ? item.length : max;
+    })
+    
+    //push to tempArrays that push to zipped
+    for (var i = 0; i < max; i++) {
+      var tempArray = [];
+      for (var j = 0; j < args.length; j++) {
+        
+        if (args[j][i] == undefined) {
+          tempArray.push(undefined)
+        } else { 
+          tempArray.push(args[j][i]) 
+        }
+
+      };
+      zipped.push(tempArray)
+    };
+
+    return zipped
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
