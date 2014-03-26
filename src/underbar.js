@@ -1,6 +1,6 @@
 /*jshint eqnull:true, expr:true*/
 
-// Testing tools 
+// ===== ===== ===== Testing tools ===== ===== ===== 
 var veggies = ['kale', 'chard', 88, 'brok']
 var positions = { qb: "Colin", rb: "Frank", wr: "Crabtree" }
 var addTwo = function(e){return e + 2}
@@ -8,11 +8,11 @@ var myObj = {a:"123", b:"456", c: function(e){return e + 2}}
 function isFunction (obj) {
   return Object.prototype.toString.call(obj) == "[object Function]";
 }
-// End testing tools 
+// ===== ===== ===== End testing tools ===== ===== ===== 
 
-// Shortcuts
+// ===== ===== =====  Shortcuts ===== ===== ===== 
   var ArrP = Array.prototype;
-// End Shortcuts
+// ===== ===== ===== End Shortcuts ===== ===== ===== 
 
 var _ = { };
 
@@ -152,7 +152,7 @@ var _ = { };
    * as an example of this.
    */
 
-  // Takes an array of objects and returns and array of the values of
+  // Takes an array of objects and returns an array of the values of
   // a certain property in it. E.g. take an array of people and return
   // an array of just their ages
   _.pluck = function(array, propertyName) {
@@ -322,9 +322,31 @@ var _ = { };
   // _.memoize should return a function that when called, will check if it has
   // already computed the result for the given argument and return that value
   // instead if possible.
-  _.memoize = function(func) {
+  _.memoize = function(func) { 
+    //var result = _.once(func)
+    //return result
+    return function() {
+      if(!func.cache) {
+        func.cache = {};
+        //console.log('creating new cache');
+      }
+
+      if (func.cache[arguments[0]]) { 
+        //console.log(arguments[0]);
+        //console.log('found cache at: ' + arguments[0]);
+        //console.log('current cache...');
+        //console.log(func.cache);
+        return func.cache[arguments[0]]
+      } else {
+        func.cache[arguments[0]] = func.apply(this, arguments)
+        //console.log('setting new cache');
+        //console.log(func.cache[arguments[0]]);
+        return func.cache[arguments[0]]
+      }
+    }
   };
 
+ 
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
   //
@@ -375,9 +397,29 @@ var _ = { };
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
-    // This is grossly unfinished 
+    if (typeof iterator === 'string') {
+      // last ditch, create an entire new array 
+      // var people = [{name : 'curly', age : 50}, {name : 'moe', age : 30}];
+      var tempArr = [], sortedArr = [];
+      for (var prop in collection) {
+        tempArr.push([prop, prop[iterator]])
+        //if (collection.hasOwnProperty(prop)) {}
+      }
+      tempArr.sort(function(a,b) {
+        return a[iterator] - b[iterator]
+      })
+      console.log(tempArr);
+      //var tempArr= [ [{name : 'moe', age : 30},30], [{name : 'curly', age : 50}, 50] ];
+      for (var i = 0; i < tempArr.length; i++) {
+        sortedArr.push(tempArr[i][0]);
+      };
+      return sortedArr
+    };
 
-        /*if (isFunction(iterator)) {
+
+    // This is grossly unfinished 
+/*
+    if (isFunction(iterator)) {
       var tempArr = _.map(collection, function (item) {
         return [iterator(item), item];
       });
@@ -392,10 +434,11 @@ var _ = { };
       return _.map(tempArr, function (item){
         return item[1];
       })  
-    } else {}*/
+    } else {}
+
     if (Array.isArray(collection)){
       var tempArr = _.invoke(collection, iterator);
-    };
+    };*/
       /*
         collection is an object with {key: value} pairs
         iterator is now a string for the key that we want to compare
@@ -453,13 +496,13 @@ var _ = { };
 
     var flattenAction = function(array){
       if ( Array.isArray(array) ) {
-        console.log("Array Alert!!!")
+        //console.log("Array Alert!!!")
         _.each(array, function(item, key) {
           if ( Array.isArray(item) ) {
             flattenAction(item); // Recursion
           }
           else{
-            console.log("Pushing: " + array[key])
+            //console.log("Pushing: " + array[key])
             flatted.push(array[key])
           }
         })
@@ -480,7 +523,7 @@ var _ = { };
         ArrP, ArrP.slice.call(arguments, 0)))
 
       _.each(all, function(item, key){
-        console.log("testing " + item +" & "+ key)
+        //console.log("testing " + item +" & "+ key)
         for (var i = 0; i < args.length; i++) {
           //console.log(args[i])
           if (!_.contains(args[i], item)) {
@@ -517,6 +560,98 @@ var _ = { };
   //
   // See the Underbar readme for details.
   _.throttle = function(func, wait) {
+    var now, timer;
+    if (!timeLeft) { var timeLeft = 0}
+    if (!result)  { var result; };
+
+    return function() {
+      var now = Date.now();
+      //console.log('====== throttle at ', Date.now());
+
+      if (timeLeft === 0) {
+        // TIP: .apply(this, arguments) is the standard way to pass on all of the
+        // information from one function call to another.
+        result  = func.apply(this, arguments);
+        timeLeft = wait
+        //console.log('timeLeft ===', timeLeft);
+        
+        setTimeout(function() {
+          timeLeft = 0;
+          //console.log('timeLeft set to 0');
+        }, wait);
+
+        return result
+
+      } else {
+        // this means its blocked 
+        //queue.push(func)
+        if (!timer) {
+          //console.log('setting timer');
+          timer = setTimeout(function(){
+            result = func.apply(this, arguments);
+            return result;
+          }, timeLeft)  
+        } else {
+          console.log('cant double time');
+        }
+        
+      }
+      
+    };
+
+
+
+  /*    if (!blocked) { var blocked = false };
+    //if (!result)  { var result; };
+    var queue = function() {
+
+    }
+
+    return function() {
+      if (!blocked) {
+        // TIP: .apply(this, arguments) is the standard way to pass on all of the
+        // information from one function call to another.
+        result = func.apply(this, arguments);
+        console.log('===== results ======');
+        console.log(result);
+        blocked = true;
+        //console.log(wait);
+
+        setTimeout(function() {
+          blocked = false;
+
+        }, wait);
+
+        return result
+
+      } else {
+        return ;//'return nothing'
+        //return result;
+      }
+      
+    };*/
+  };
+
+
+  _.throttle_things = function(func) {
+    // TIP: These variables are stored in a "closure scope" (worth researching),
+    // so that they'll remain available to the newly-generated function every
+    // time it's called.
+    var alreadyCalled = false;
+    var result;
+
+    // TIP: We'll return a new function that delegates to the old one, but only
+    // if it hasn't been called before.
+    return function() {
+      if (!alreadyCalled) {
+        // TIP: .apply(this, arguments) is the standard way to pass on all of the
+        // information from one function call to another.
+        result = func.apply(this, arguments);
+        alreadyCalled = true;
+      }
+      // The new function always returns the originally computed result.
+      return result;
+    };
   };
 
 }).call(this);
