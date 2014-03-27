@@ -397,25 +397,39 @@ var _ = { };
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+    var str;
 
     if (typeof iterator === 'string') {
-      collection.sort(function(a,b) {
-        if (a[iterator] > b[iterator])
-            return 1;
-        if (a[iterator] < b[iterator])
-            return -1;
-        return 0;
-      })
-    } else {
-          collection.sort(function(a,b){
-            if (iterator(a) > iterator(b))
-                return 1;
-            if (iterator(a) < iterator(b))
-                return -1;
-            return 0;
-          }) 
-        }
-        return collection 
+      var str = iterator;
+      iterator = function(item){
+        return item[str];
+      } 
+    }
+
+    collection.sort(function(a,b){
+      return iterator(a) - iterator(b)
+    }) 
+
+    return collection;
+
+//    if (typeof iterator === 'string') {
+//      collection.sort(function(a,b) {
+//        if (a[iterator] > b[iterator])
+//            return 1;
+//        if (a[iterator] < b[iterator])
+//            return -1;
+//        return 0;
+//      })
+//    } else {
+//      collection.sort(function(a,b){
+//        if (iterator(a) > iterator(b))
+//            return 1;
+//        if (iterator(a) < iterator(b))
+//            return -1;
+//        return 0;
+//      }) 
+//    }
+//    return collection 
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -525,77 +539,77 @@ var _ = { };
   //
   // See the Underbar readme for details.
   _.throttle = function(func, wait) {
-    var now, timer;
-    if (!timeLeft) { var timeLeft = 0}
-    if (!result)  { var result; };
+
+/*    var now, timer;
+    if (!timeLeft)  { var timeLeft = 0}
+    if (!result)    { var result; };
 
     return function() {
-      var now = Date.now();
+      //var now = Date.now();
       //console.log('====== throttle at ', Date.now());
 
       if (timeLeft === 0) {
-        // TIP: .apply(this, arguments) is the standard way to pass on all of the
-        // information from one function call to another.
-        result  = func.apply(this, arguments);
-        timeLeft = wait
-        //console.log('timeLeft ===', timeLeft);
-        
+        result    = func.apply(this, arguments);
+        timeLeft  = wait
         setTimeout(function() {
           timeLeft = 0;
-          //console.log('timeLeft set to 0');
         }, wait);
 
-        return result
-
-      } else {
-        // this means its blocked 
-        //queue.push(func)
-        if (!timer) {
-          //console.log('setting timer');
-          timer = setTimeout(function(){
-            result = func.apply(this, arguments);
-            return result;
-          }, timeLeft)  
-        } else {
-          console.log('cant double time');
-        }
-        
       }
-      
-    };
+      return result
 
+    };*/
 
-
-  /*    if (!blocked) { var blocked = false };
-    //if (!result)  { var result; };
-    var queue = function() {
-
-    }
+/*        var now, timer;
+    if (!timeLeft)  { var timeLeft = 0}
+    if (!result)    { var result; };
 
     return function() {
-      if (!blocked) {
-        // TIP: .apply(this, arguments) is the standard way to pass on all of the
-        // information from one function call to another.
-        result = func.apply(this, arguments);
-        console.log('===== results ======');
-        console.log(result);
-        blocked = true;
-        //console.log(wait);
+      //var now = Date.now();
+      //console.log('====== throttle at ', Date.now());
 
+      if (timeLeft === 0) {
+        result    = func.apply(this, arguments);
+        timeLeft  = wait
         setTimeout(function() {
-          blocked = false;
-
+          timeLeft = 0;
         }, wait);
 
+      }
+      return result
+
+    };*/
+    var now;
+
+    if (!timeLeft)  { var timeLeft = 0}
+    if (!result)    { var result; };
+    var created = Date.now();
+    var gate  = 0;
+    console.log('create trottle and normalization at ', created);
+    console.log('gate set at ', gate);
+
+    return function() {
+      var now   = Date.now() - created;
+      console.log('# Function call at ', now,'ms');
+
+      if (now > gate) {
+
+        console.log('-----', (now > gate),'-----', 'called(',now,') bigger than gate', gate);
+        gate = (gate + wait)
+        console.log('gate set at ', gate,'ms' );
+
+        result    = func.apply(this, arguments);
+        timeLeft  = wait
+        console.log('result', result);
         return result
 
       } else {
-        return ;//'return nothing'
-        //return result;
+        console.log('-----', (now > gate),'-----', 'called(',now,') smaller than gate', gate);
+        return result
       }
-      
-    };*/
-  };
+    };
+
+    };
 
 
   _.throttle_things = function(func) {
