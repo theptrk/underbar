@@ -397,60 +397,25 @@ var _ = { };
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+
     if (typeof iterator === 'string') {
-      // last ditch, create an entire new array 
-      // var people = [{name : 'curly', age : 50}, {name : 'moe', age : 30}];
-      var tempArr = [], sortedArr = [];
-      for (var prop in collection) {
-        tempArr.push([prop, prop[iterator]])
-        //if (collection.hasOwnProperty(prop)) {}
-      }
-      tempArr.sort(function(a,b) {
-        return a[iterator] - b[iterator]
+      collection.sort(function(a,b) {
+        if (a[iterator] > b[iterator])
+            return 1;
+        if (a[iterator] < b[iterator])
+            return -1;
+        return 0;
       })
-      console.log(tempArr);
-      //var tempArr= [ [{name : 'moe', age : 30},30], [{name : 'curly', age : 50}, 50] ];
-      for (var i = 0; i < tempArr.length; i++) {
-        sortedArr.push(tempArr[i][0]);
-      };
-      return sortedArr
-    };
-
-
-    // This is grossly unfinished 
-/*
-    if (isFunction(iterator)) {
-      var tempArr = _.map(collection, function (item) {
-        return [iterator(item), item];
-      });
-
-      tempArr.sort(function(a, b){
-        a = a[0];
-        b = b[0];
-        if (a == undefined){ return 1 }
-        return a < b ? -1: (a > b ? 1 : 0)
-      });
-
-      return _.map(tempArr, function (item){
-        return item[1];
-      })  
-    } else {}
-
-    if (Array.isArray(collection)){
-      var tempArr = _.invoke(collection, iterator);
-    };*/
-      /*
-        collection is an object with {key: value} pairs
-        iterator is now a string for the key that we want to compare
-      */
-
-      /*
-
-        _.sortBy(people, 'name')
-        people = {name: 'patrick', name: 'jon', name: 'raymond'}
-
-      */
-    
+    } else {
+          collection.sort(function(a,b){
+            if (iterator(a) > iterator(b))
+                return 1;
+            if (iterator(a) < iterator(b))
+                return -1;
+            return 0;
+          }) 
+        }
+        return collection 
   };
 
   // Zip together two or more arrays with elements of the same index
