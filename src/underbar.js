@@ -540,76 +540,37 @@ var _ = { };
   // See the Underbar readme for details.
   _.throttle = function(func, wait) {
 
-/*    var now, timer;
-    if (!timeLeft)  { var timeLeft = 0}
-    if (!result)    { var result; };
+    var funcs = [], 
+      locked = false,
+      lastval = undefined;
 
-    return function() {
-      //var now = Date.now();
-      //console.log('====== throttle at ', Date.now());
-
-      if (timeLeft === 0) {
-        result    = func.apply(this, arguments);
-        timeLeft  = wait
-        setTimeout(function() {
-          timeLeft = 0;
-        }, wait);
-
-      }
-      return result
-
-    };*/
-
-/*        var now, timer;
-    if (!timeLeft)  { var timeLeft = 0}
-    if (!result)    { var result; };
-
-    return function() {
-      //var now = Date.now();
-      //console.log('====== throttle at ', Date.now());
-
-      if (timeLeft === 0) {
-        result    = func.apply(this, arguments);
-        timeLeft  = wait
-        setTimeout(function() {
-          timeLeft = 0;
-        }, wait);
-
-      }
-      return result
-
-    };*/
-    var now;
-
-    if (!timeLeft)  { var timeLeft = 0}
-    if (!result)    { var result; };
-    var created = Date.now();
-    var gate  = 0;
-    console.log('create trottle and normalization at ', created);
-    console.log('gate set at ', gate);
-
-    return function() {
-      var now   = Date.now() - created;
-      console.log('# Function call at ', now,'ms');
-
-      if (now > gate) {
-
-        console.log('-----', (now > gate),'-----', 'called(',now,') bigger than gate', gate);
-        gate = (gate + wait)
-        console.log('gate set at ', gate,'ms' );
-
-        result    = func.apply(this, arguments);
-        timeLeft  = wait
-        console.log('result', result);
-        return result
-
-      } else {
-        console.log('-----', (now > gate),'-----', 'called(',now,') smaller than gate', gate);
-        return result
-      }
+    var unlock  = function () { 
+      locked  = false; 
     };
+    
+    var runFunc = function () {
+      setTimeout(unlock, wait);
+      locked  = true;
+      lastval = func.apply(this, arguments);
+      return lastval;
+    }
 
+    return function () {
+        if (!locked) {
+          return runFunc();
+        } else {
+          funcs.push(true);
+          var timer = setInterval(function(){
+            if (!locked) {
+              funcs.shift();
+              clearInterval(timer)
+              runFunc();
+            };
+          }, 1)
+          return lastval;
+        }
     };
+  };
 
 
   _.throttle_things = function(func) {
