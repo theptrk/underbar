@@ -107,17 +107,16 @@ var _ = {};
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
-    var uniques = [];
+    var uniqueObj = {};
 
-    _.each(array, function(value, key, array){
-      if (uniques.indexOf(value) === -1) {
-        uniques.push(value);
-      }
-    })
-
-    return uniques;
+    return _.reject(array, function(v){
+      var exists = uniqueObj[v];
+      uniqueObj[v] = true;
+      return exists;
+    });
   };
 
+  console.log(_.uniq([1,2,3,4,1,2,3]));
 
   // Return the results of applying an iterator to each element.
   _.map = function(array, iterator) {
