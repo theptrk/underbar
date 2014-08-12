@@ -116,8 +116,6 @@ var _ = {};
     });
   };
 
-  console.log(_.uniq([1,2,3,4,1,2,3]));
-
   // Return the results of applying an iterator to each element.
   _.map = function(array, iterator) {
     // map() is a useful primitive iteration function that works a lot
