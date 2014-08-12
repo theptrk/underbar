@@ -4,7 +4,7 @@
   var ArrayProto = Array.prototype;
 // ===== ===== ===== End Shortcuts ===== ===== ===== 
 
-var _ = { };
+var _ = {};
 
 (function() {
 
@@ -34,10 +34,10 @@ var _ = { };
   // last element.
   _.last = function(array, n) {
     if (n === undefined){
-      return array[array.length-1]
+      return array[array.length-1];
     } 
     else if (n > array.length) {
-      return array 
+      return array;
     } 
     else {
       return array.slice(array.length - n); 
@@ -50,13 +50,13 @@ var _ = { };
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
-    if (collection.length) {
+    if (Array.isArray(collection)) {
       for (var i = 0; i < collection.length; i++) {
-        iterator(collection[i], i, collection)
+        iterator(collection[i], i, collection);
       }  
     } else {
       for (var item in collection) {
-        iterator(collection[item], item, collection)
+        iterator(collection[item], item, collection);
       }
     }
   };
@@ -84,28 +84,25 @@ var _ = { };
 
     _.each(collection, function(item){
       if (test(item)) {
-        filtered.push(item)
+        filtered.push(item);
       }
     });
 
     return filtered;
-  };                    
+  };
+
+  var not = function(func) {
+    return function(){
+      return !func.apply(null, arguments);
+    };
+  };
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
 
-    var truths = _.filter(collection, test);
-    var rejected = [];
-  
-    _.each(collection, function(item){
-      if (truths.indexOf(item) === -1) {
-        rejected.push(item);
-      }
-    })
-
-    return rejected
+    return _.filter(collection, not(test));
   };
 
   // Produce a duplicate-free version of the array.
