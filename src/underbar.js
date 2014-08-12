@@ -1,17 +1,7 @@
 /*jshint eqnull:true, expr:true*/
 
-// ===== ===== ===== Testing tools ===== ===== ===== 
-var veggies = ['kale', 'chard', 88, 'brok']
-var positions = { qb: "Colin", rb: "Frank", wr: "Crabtree" }
-var addTwo = function(e){return e + 2}
-var myObj = {a:"123", b:"456", c: function(e){return e + 2}}
-function isFunction (obj) {
-  return Object.prototype.toString.call(obj) == "[object Function]";
-}
-// ===== ===== ===== End testing tools ===== ===== ===== 
-
 // ===== ===== =====  Shortcuts ===== ===== ===== 
-  var ArrP = Array.prototype;
+  var ArrayProto = Array.prototype;
 // ===== ===== ===== End Shortcuts ===== ===== ===== 
 
 var _ = { };
@@ -22,7 +12,7 @@ var _ = { };
   // seem very useful, but remember it--if a function needs to provide an
   // iterator when the user does not pass one in, this will be handy.
   _.identity = function(val) {
-    return val
+    return val;
   };
 
   /**
@@ -497,9 +487,9 @@ var _ = { };
   _.intersection = function(arrays) {
       var args = Array.prototype.slice.call(arguments,0);
       var all = _.uniq(Array.prototype.concat.apply(
-        ArrP, ArrP.slice.call(arguments, 0)))
+        ArrayProto, ArrayProto.slice.call(arguments, 0)))
       var intersection = _.uniq(Array.prototype.concat.apply(
-        ArrP, ArrP.slice.call(arguments, 0)))
+        ArrayProto, ArrayProto.slice.call(arguments, 0)))
 
       _.each(all, function(item, key){
         //console.log("testing " + item +" & "+ key)
@@ -512,20 +502,20 @@ var _ = { };
       })
       
       return intersection
-      //ArrP is defined on top
+      //ArrayProto is defined on top
   };
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
-    var restArray = ArrP.concat.apply(ArrP, ArrP.slice.call(arguments, 1));
+    var restArray = ArrayProto.concat.apply(ArrayProto, ArrayProto.slice.call(arguments, 1));
     var baseArray = arguments[0];
 
     return _.filter(array, function(item) {
       return !_.contains(restArray, item)
       }); 
 
-    //ArrP is defined on top
+    //ArrayProto is defined on top
   };
 
 
